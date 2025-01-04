@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { LogIn } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function LoginForm() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const { login, error, loading } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
+    await login(credentials.email, credentials.password);
   };
 
   return (
@@ -20,6 +22,13 @@ export default function LoginForm() {
             Connectez-vous à votre compte
           </p>
         </div>
+        
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
@@ -33,6 +42,7 @@ export default function LoginForm() {
                 placeholder="Email"
                 value={credentials.email}
                 onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
+                disabled={loading}
               />
             </div>
             <div>
@@ -46,6 +56,7 @@ export default function LoginForm() {
                 placeholder="Mot de passe"
                 value={credentials.password}
                 onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                disabled={loading}
               />
             </div>
           </div>
@@ -53,12 +64,13 @@ export default function LoginForm() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 <LogIn className="h-5 w-5 text-blue-500 group-hover:text-blue-400" />
               </span>
-              Se connecter
+              {loading ? 'Connexion...' : 'Se connecter'}
             </button>
           </div>
         </form>
