@@ -16,14 +16,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, 
-        { email, password },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
+      const response = await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_API_URL}/auth/login`,
+        data: { email, password },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        withCredentials: true
+      });
 
       const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
