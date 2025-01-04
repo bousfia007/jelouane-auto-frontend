@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { LogIn } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const { login, error, loading } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(credentials.email, credentials.password);
+    setError(null);
+    setLoading(true);
+
+    try {
+      await login(credentials.email, credentials.password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Invalid credentials');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
