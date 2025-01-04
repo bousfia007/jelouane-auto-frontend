@@ -9,7 +9,7 @@ export const api = axios.create({
   }
 });
 
-// Intercepteur pour ajouter le token JWT
+// Add CORS headers to requests
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -18,7 +18,7 @@ api.interceptors.request.use(config => {
   return config;
 });
 
-// Intercepteur pour gérer les erreurs
+// Handle API errors
 api.interceptors.response.use(
   response => response.data,
   error => {
